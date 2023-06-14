@@ -1,0 +1,19 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: cloud-config-server
+  cloud:
+    config:
+      server:
+        git:
+          skipSslValidation: true
+          uri: file:///C:/Users/vivek.shukla/Downloads/SpringCloudConfigs  # local config files path in a folder with git init , add and commit in local
+#          uri: https://github.com/vivekkshukla14/SpringCloudConfigs.git # add GitHub repo containing your svc config
+#          username: ${GIT_USERNAME}   # if you are using a secured  private repo
+#          password: ${GIT_TOKEN} # Add Personal Access Token
+          basedir: tmp/configs
+logging:
+  pattern:
+    dateformat: yyyy-MM-dd HH:mm:ss.SSS [z] ,IST
+  path: logs/

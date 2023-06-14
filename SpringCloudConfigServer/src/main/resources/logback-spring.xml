@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeContext>false</includeContext>
+            <timeZone>Asia/Kolkata</timeZone>
+            <fieldNames>
+                <timestamp>timestamp</timestamp>
+                <level>level</level>
+                <logger>logger</logger>
+                <version>[ignore]</version>
+                <thread>[ignore]</thread>
+                <levelValue>[ignore]</levelValue>
+            </fieldNames>
+        </encoder>
+    </appender>
+
+    <!-- Appender to log to file in a JSON format, one JSON object per line -->
+    <springProperty scope="context" name="LOGS" source="logging.path"/>
+    <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/config_server_logs.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/config_server_logs-%d{dd-MM-yyyy}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+
+                <timestamp>
+                    <fieldName>timestamp</fieldName>
+                    <timeZone>Asia/Kolkata</timeZone>
+                </timestamp>
+                <!-- Assign logger fields to JSON object -->
+                <pattern>
+                    <pattern>
+                        {
+                        "level": "%level",
+                        "logger": "%logger",
+                        "message": "%message"
+                        }
+                    </pattern>
+                </pattern>
+
+                <!-- Log all StructuredArgument instances -->
+                <arguments/>
+
+                <!-- Include Exception stack traces -->
+                <stackTrace/>
+
+            </providers>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="JSON_FILE"/>
+    </root>
+
+</configuration>
